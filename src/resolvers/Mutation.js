@@ -46,7 +46,7 @@ const Mutation = {
     db.posts.push(post);
     return post;
   },
-  createComment(parent, args, { db }, info) {
+  createComment(parent, args, { db, pubsub }, info) {
     const { text, author, post } = args;
     const authorExists = db.users.some(user => user.id === author);
     const postExists = db.posts.some(p => p.id === post);
@@ -58,6 +58,7 @@ const Mutation = {
         post
       }
       db.comments.push(comment);
+      pubsub.publish(`comment ${post}`, { comment });
       return comment;
     } else {
       throw new Error('Author or post does not exist');
