@@ -44,7 +44,12 @@ const Mutation = {
       author
     }
     db.posts.push(post);
-    pubsub.publish('post', { post });
+    pubsub.publish('post', {
+      post: {
+        mutation: 'CREATED',
+        data: post
+      }
+    });
     return post;
   },
   createComment(parent, args, { db, pubsub }, info) {
